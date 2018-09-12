@@ -1,0 +1,5 @@
+while\( {printf("\n\t%s loop begins",yytext);}
+ 	for\( {printf("\n\t%s loop begins",yytext);}
+	do\( {printf("\n\t%s loop begins",yytext);}
+	return\( {printf("\n\t%s keyword",yytext);}
+	printf {if(!comment)printf("\n%s is a print statement");}

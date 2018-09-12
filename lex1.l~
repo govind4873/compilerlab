@@ -1,0 +1,56 @@
+%{
+	#include<stdio.h>
+	#include<file.h>
+	int comment=0;
+%}
+ 	identifier [a-z,A-Z][a-z,A-Z,0-9]
+%%
+	#.* {printf("\n\t %s is a preprocessor directive",yytext);}
+	int|float|char|double|while|for|struct|type of|do|if|break|continue|void|switch|return|goto|else {printf(\n\t %s is a keyword",yytext);}
+
+ 	"/*" {comment=1;}{printf("\n\t %s is a comment",yytext);}
+	"*/" {comment=0;}{printf("\n\t %s end of comment",yytext);}
+	while\( {printf("\n\t %s loop begins",yytext);}
+ 	for\( {printf("\n\t %s loop begins",yytext);}
+	do\( {printf("\n\t %s loop begins",yytext);}
+	return\( {printf("\n\t %s keyword",yytext);}
+	printf {if(!comment) printf(""\n %s is a print statement");}
+	{identifier}\( if(!comment)printf("\n Function %s \n\t,yytext);}
+	\{ {if(!comment) printf(""\n Block begins ");}
+	\} {if(!comment)printf("\n block ends");}
+	{identifier}(\[[0-9]*\])? {if(!comment) printf(""\n %s array, yytext");}
+	\".*\" {if(!comment) printf(""\n %s is a string, yytext");}
+	\'[a-z,A-Z] \' {if(!comment) printf(""\n %s is a character, yytext");}
+	[0-9]+ {if(!comment) printf(""\n %s is an integer, yytext");}
+	[0-9]+"."[0-9]* {if(!comment) printf(""\n %s is a float, yytext");}
+	\((\:)? {if(!comment){ printf(""\n\t;ECHO,printf("\n");}}
+	\% {if(!comment) printf(""\n %s is a modulo operator, yytext");}
+	\/ {if(!comment) printf(""\n %s is a divison operator, yytext");}
+	\+ {if(!comment) printf(""\n %s is a addition operator, yytext");}
+	\- {if(!comment) printf(""\n %s is a substraction operator, yytext");}
+	\* {if(!comment) printf(""\n %s is a multiplication operator, yytext");}
+	\= {if(!comment) printf(""\n %s is a assignment operator, yytext");}
+	\<=|\>=|\>|\<|== {if(!comment) printf(""\n %s is a relational operator, yytext");}
+	%%
+int main(int argc,char **argv)
+{
+	if (argc>1)
+	{
+		FILE *file;
+		file=fopen(argv[1],"r");
+		if(!file)
+		{
+			printf("cannot open file");
+			exit(0);
+		}
+	yyin=file;
+	}
+	yylex();
+	printf("\n");
+	return(0);
+}
+int yywrap()
+	{return (1);
+	}
+	
+		
